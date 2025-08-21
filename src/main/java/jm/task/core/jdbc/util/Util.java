@@ -18,7 +18,32 @@ public class Util {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "78853";
 
-    private static SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
+
+    public Util() {
+        createSessionFactory();
+    }
+
+    private void createSessionFactory() {
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .applySetting("hibernate.connection.driver_class", DB_DRIVER)
+                .applySetting("hibernate.connection.url", DB_URL)
+                .applySetting("hibernate.connection.username", DB_USER)
+                .applySetting("hibernate.connection.password", DB_PASSWORD)
+                .applySetting("hibernate.dialect", DB_DIALECT)
+                .applySetting("hibernate.show_sql", "true")
+                .applySetting("hibernate.hbm2ddl.auto", "update")
+                .build();
+
+            MetadataSources metadataSources = new MetadataSources(registry);
+            metadataSources.addAnnotatedClass(User.class);
+
+            Metadata metadata = metadataSources.getMetadataBuilder().build();
+            sessionFactory = metadata.getSessionFactoryBuilder().build();
+        }
+        public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
 
     public Connection getConnection() {
         Connection connection = null;
@@ -31,25 +56,4 @@ public class Util {
         return connection;
     }
 
-
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                    .applySetting("hibernate.connection.driver_class", DB_DRIVER)
-                    .applySetting("hibernate.connection.url", DB_URL)
-                    .applySetting("hibernate.connection.username", DB_USER)
-                    .applySetting("hibernate.connection.password", DB_PASSWORD)
-                    .applySetting("hibernate.dialect", DB_DIALECT)
-                    .applySetting("hibernate.show_sql", "true")
-                    .applySetting("hibernate.hbm2ddl.auto", "update")
-                    .build();
-
-            MetadataSources metadataSources = new MetadataSources(registry);
-            metadataSources.addAnnotatedClass(User.class);
-
-            Metadata metadata = metadataSources.getMetadataBuilder().build();
-            sessionFactory = metadata.getSessionFactoryBuilder().build();
-        }
-        return sessionFactory;
-    }
 }
