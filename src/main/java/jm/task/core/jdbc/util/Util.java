@@ -20,11 +20,9 @@ public class Util {
 
     private SessionFactory sessionFactory;
 
-    public Util() {
-        createSessionFactory();
-    }
 
-    private void createSessionFactory() {
+    public SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .applySetting("hibernate.connection.driver_class", DB_DRIVER)
                 .applySetting("hibernate.connection.url", DB_URL)
@@ -41,7 +39,6 @@ public class Util {
             Metadata metadata = metadataSources.getMetadataBuilder().build();
             sessionFactory = metadata.getSessionFactoryBuilder().build();
         }
-        public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
